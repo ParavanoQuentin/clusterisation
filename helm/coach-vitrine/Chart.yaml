@@ -1,0 +1,18 @@
+apiVersion: v2
+name: coach-vitrine
+description: A Helm chart for Coach Vitrine microservices application
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - microservices
+  - react
+  - nodejs
+  - postgresql
+  - kubernetes
+maintainers:
+  - name: Clusterisation Project
+    email: admin@coach-vitrine.com
+sources:
+  - https://github.com/your-org/coach-vitrine
+dependencies: []

@@ -1,0 +1,76 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: coach-vitrine-ingress
+  namespace: coach-vitrine
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+spec:
+  rules:
+  - host: app.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-service
+            port:
+              number: 80
+      - path: /api/users
+        pathType: Prefix
+        backend:
+          service:
+            name: users-service
+            port:
+              number: 3001
+      - path: /api/posts
+        pathType: Prefix
+        backend:
+          service:
+            name: posts-service
+            port:
+              number: 3002
+---
+# Configuration HTTPS avec certificat auto-signé
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: coach-vitrine-ingress-tls
+  namespace: coach-vitrine
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "selfsigned-issuer"
+spec:
+  tls:
+  - hosts:
+    - app.local
+    secretName: coach-vitrine-tls
+  rules:
+  - host: app.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-service
+            port:
+              number: 80
+      - path: /api/users
+        pathType: Prefix
+        backend:
+          service:
+            name: users-service
+            port:
+              number: 3001
+      - path: /api/posts
+        pathType: Prefix
+        backend:
+          service:
+            name: posts-service
+            port:
+              number: 3002

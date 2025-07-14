@@ -1,0 +1,131 @@
+# Configuration globale
+global:
+  namespace: coach-vitrine
+  imageRegistry: coach-vitrine
+  imageTag: latest
+  imagePullPolicy: Never
+
+# Configuration du frontend
+frontend:
+  replicaCount: 3
+  image:
+    repository: coach-vitrine/frontend
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 80
+  resources:
+    requests:
+      memory: "64Mi"
+      cpu: "50m"
+    limits:
+      memory: "128Mi"
+      cpu: "100m"
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+
+# Configuration du service Users
+usersService:
+  replicaCount: 2
+  image:
+    repository: coach-vitrine/users-service
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 3001
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 8
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+
+# Configuration du service Posts
+postsService:
+  replicaCount: 2
+  image:
+    repository: coach-vitrine/posts-service
+    tag: latest
+  service:
+    type: ClusterIP
+    port: 3002
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 8
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+
+# Configuration PostgreSQL
+postgresql:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: postgres
+    tag: 15-alpine
+  service:
+    type: ClusterIP
+    port: 5432
+  persistence:
+    enabled: true
+    size: 5Gi
+    storageClass: manual
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+  auth:
+    database: coach_vitrine
+    username: postgres
+    password: your_secure_password
+
+# Configuration de l'Ingress
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  host: app.local
+  tls:
+    enabled: false
+    secretName: coach-vitrine-tls
+
+# Sécurité
+security:
+  networkPolicies:
+    enabled: true
+  rbac:
+    enabled: true
+  serviceAccount:
+    create: true
+    name: coach-vitrine-sa
+
+# Monitoring
+monitoring:
+  enabled: false
+  prometheus:
+    enabled: false
+  grafana:
+    enabled: false

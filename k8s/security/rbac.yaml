@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: coach-vitrine-sa
+  namespace: coach-vitrine
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: coach-vitrine
+  name: coach-vitrine-role
+rules:
+- apiGroups: [""]
+  resources: ["pods", "services", "endpoints"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "replicasets"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: coach-vitrine-rolebinding
+  namespace: coach-vitrine
+subjects:
+- kind: ServiceAccount
+  name: coach-vitrine-sa
+  namespace: coach-vitrine
+roleRef:
+  kind: Role
+  name: coach-vitrine-role
+  apiGroup: rbac.authorization.k8s.io
