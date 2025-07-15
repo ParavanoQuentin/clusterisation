@@ -9,15 +9,13 @@ VERSION="latest"
 
 # Frontend
 echo "Construction de l'image frontend..."
-cd frontend
-docker build -f ../docker/frontend/Dockerfile -t ${REGISTRY}/frontend:${VERSION} .
+docker build -f docker/frontend/Dockerfile --build-arg BUILD_CONTEXT=frontend -t ${REGISTRY}/frontend:${VERSION} .
 if [ $? -eq 0 ]; then
     echo "Image frontend construite avec succès"
 else
     echo "Erreur lors de la construction de l'image frontend"
     exit 1
 fi
-cd ..
 
 # Users Service
 echo "Construction de l'image users-service..."

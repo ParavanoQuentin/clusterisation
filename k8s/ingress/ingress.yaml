@@ -4,21 +4,14 @@ metadata:
   name: coach-vitrine-ingress
   namespace: coach-vitrine
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
 spec:
+  ingressClassName: nginx
   rules:
   - host: app.local
     http:
       paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: frontend-service
-            port:
-              number: 80
       - path: /api/users
         pathType: Prefix
         backend:
@@ -33,6 +26,13 @@ spec:
             name: posts-service
             port:
               number: 3002
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-service
+            port:
+              number: 80
 ---
 # Configuration HTTPS avec certificat auto-signé
 apiVersion: networking.k8s.io/v1

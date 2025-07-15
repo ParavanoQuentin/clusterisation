@@ -4,13 +4,13 @@ FROM node:18-alpine AS build
 WORKDIR /app
 
 # Copier les fichiers de dépendances
-COPY package*.json ./
+COPY frontend/package*.json ./
 
 # Installer les dépendances
-RUN npm ci --only=production
+RUN npm install
 
 # Copier le code source
-COPY . .
+COPY frontend/ .
 
 # Construire l'application
 RUN npm run build
@@ -22,7 +22,7 @@ FROM nginx:alpine
 COPY --from=build /app/build /usr/share/nginx/html
 
 # Copier la configuration nginx personnalisée
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY docker/frontend/nginx.conf /etc/nginx/nginx.conf
 
 # Exposer le port 80
 EXPOSE 80
